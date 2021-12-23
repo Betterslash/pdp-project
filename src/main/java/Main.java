@@ -1,21 +1,16 @@
-import model.Node;
-import model.PuzzleMatrix;
-import model.PuzzleSize;
-import model.Tree;
+import service.Solver;
 
 import java.util.ArrayList;
 
 public class Main {
-    public static void main(String[] args) {
-        var puzzle = PuzzleMatrix.getRandomInstance(PuzzleSize.SIXTEEN);
-        var tree = Tree.builder()
-                .root(Node.builder()
-                        .children(new ArrayList<>())
-                        .siblings(new ArrayList<>())
-                        .value(puzzle)
-                        .build())
+    public static void main(String[] args) throws InterruptedException {
+        var solver = Solver.builder()
+                .closed(new ArrayList<>())
+                .open(new ArrayList<>())
                 .build();
-        tree.getRoot().generateNext();
-        System.out.println(tree);
+
+        solver.resolve();
+        System.out.println(solver.getClosed());
+
     }
 }
