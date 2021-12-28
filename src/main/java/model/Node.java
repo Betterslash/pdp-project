@@ -2,10 +2,15 @@ package model;
 
 import lombok.Builder;
 import lombok.Data;
+import util.ShuffleTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Data
 @Builder
@@ -15,17 +20,33 @@ public class Node implements Comparable<Node>{
     private int level;
 
     public List<Node> generateChildren(){
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
+        List<ShuffleTask> tasks = new ArrayList<>();
         var moves = new int[][]{{1, 0},
                 {0, 1},
                 {-1, 0},
                 {0, -1}};
         var children = new ArrayList<Node>();
         for (var move: moves) {
-            var child = this.shuffle(value, move);
+            ShuffleTask task = new ShuffleTask(value, move, this.getLevel());
+            tasks.add(task);
+            executor.execute(task);
+
+        }
+
+        executor.shutdown();
+        try {
+            executor.awaitTermination(50, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        for (ShuffleTask task: tasks){
+            var child = task.getResultedNode();
             if(child != null){
                 children.add(child);
             }
         }
+
         return children;
     }
 
