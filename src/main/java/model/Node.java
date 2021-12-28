@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class Node {
+public class Node implements Comparable<Node>{
     private Puzzle value;
     private int fValue;
     private int level;
@@ -53,5 +53,23 @@ public class Node {
             }
         }
         return null;
+    }
+
+    @Override
+    public int compareTo(Node o) {
+        return this.getFValue() - o.getFValue();
+    }
+
+    public boolean isDifferent(Node node){
+        var isDifferent = false;
+        for (int i = 0; i < this.value.getSize(); i++) {
+            for (int j = 0; j < this.value.getSize(); j++) {
+                if (node.getValue().getRepresentation()[i][j] != this.value.getRepresentation()[i][j]) {
+                    isDifferent = true;
+                    break;
+                }
+            }
+        }
+        return isDifferent;
     }
 }

@@ -3,6 +3,7 @@ package model;
 import lombok.Builder;
 import lombok.Data;
 import util.PuzzleChecker;
+import util.PuzzleType;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -14,12 +15,32 @@ public class Puzzle {
     private int[] emptyPosition;
     private int size;
 
-    public static Puzzle getStartPuzzle() {
-        var result = generateRandomPuzzle();
-        while (!PuzzleChecker.isSolvable(result)){
-            result = generateRandomPuzzle();
+    public static Puzzle getStartPuzzle(PuzzleType puzzleType) {
+        switch (puzzleType){
+            case DEFAULT ->  {
+                var startPuzzle = new int[][] {
+                        {2,  4,  8,  12},
+                        {1, 7,  3,  14},
+                        {-1,  6, 15, 11},
+                        {5,  9,  13, 10},
+                };
+                var emptyPosition = new int[] {2, 0};
+                var size = 4;
+                return Puzzle.builder()
+                        .size(size)
+                        .emptyPosition(emptyPosition)
+                        .representation(startPuzzle)
+                        .build();
+            }
+            case GENERATED -> {
+                var result = generateRandomPuzzle();
+                while (!PuzzleChecker.isSolvable(result)){
+                    result = generateRandomPuzzle();
+                }
+                return result;
+            }
+            default -> throw new RuntimeException();
         }
-        return result;
     }
 
     private static Puzzle generateRandomPuzzle(){
