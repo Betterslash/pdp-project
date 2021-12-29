@@ -6,6 +6,7 @@ import model.Node;
 import model.Puzzle;
 import util.PuzzleType;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -38,12 +39,13 @@ public class Solver {
         return temporary;
     }
 
-    public void resolve(Node root) {
+    public List<Node> resolve(Node root) {
         root.setFValue(this.computeF(root, goalPuzzle));
         this.open.add(root);
         var current = this.open.get(0);
+        var result = new ArrayList<Node>();
         while (true){
-            Solver.prettyPrint(current);
+            result.add(current);
             if(this.computeH(current.getValue(), goalPuzzle) == 0){
                 break;
             }
@@ -68,7 +70,7 @@ public class Solver {
                 current = possibilities.get(0);
             }
         }
-        System.out.println(current.getLevel());
+        return result;
     }
 
     public static void prettyPrint(Node current){
