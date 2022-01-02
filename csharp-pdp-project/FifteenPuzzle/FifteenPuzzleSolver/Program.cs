@@ -18,10 +18,24 @@ namespace FifteenPuzzleSolver
             //MpiRun(args);
             Console.WriteLine($"Puzzle size is {Constants.PuzzleSize}");
             Console.WriteLine($"Puzzle solving will be done using {Constants.RunType}");
-            await ThreadedRun(args);
+            switch (Constants.RunType)
+            {
+                case Constants.RunTypeEnum.THREADED:
+                {
+                    await ThreadedRun();
+                    break;
+                }
+                case Constants.RunTypeEnum.MPI:
+                {
+                    MpiRun(args);
+                    break;
+                }
+                default:
+                    throw new Exception("Something went wrong during the initialization of the program...");
+            }
         }
         
-        private static async Task ThreadedRun(string[] args)
+        private static async Task ThreadedRun()
         {
             var start = DateTime.Now;
             var root = Node.CreateInstance(Solver.StartPuzzle, 0, 0);
@@ -47,7 +61,7 @@ namespace FifteenPuzzleSolver
             {
                 if (Communicator.world.Rank == 0)
                 {
-                    Console.WriteLine("Maser will start ...");
+                    Console.WriteLine("Master will start ...");
                     Master.StartWorkers();
                 }
                 else

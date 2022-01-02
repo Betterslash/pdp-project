@@ -8,7 +8,18 @@ namespace FifteenPuzzleSolver.Utils
     {
         private static readonly IConfiguration Config = InstantiateConfig();
         public static readonly int PuzzleSize = Convert.ToInt32(Config.GetSection(nameof(PuzzleSize)).Value);
-        public static readonly string RunType = Config.GetSection(nameof(RunType)).Value;
+        public static readonly RunTypeEnum RunType = GetRunType();
+
+        private static RunTypeEnum GetRunType()
+        {
+            var stringRepresentation = Config.GetSection(nameof(RunType)).Value;
+            return stringRepresentation switch
+            {
+                nameof(RunTypeEnum.MPI) => RunTypeEnum.MPI,
+                nameof(RunTypeEnum.THREADED) => RunTypeEnum.THREADED,
+                _ => throw new Exception($"Run Type {stringRepresentation} is invalid ...")
+            };
+        }
 
         public static readonly int[][] Moves = {
             new[]{1, 0}, 
@@ -23,6 +34,12 @@ namespace FifteenPuzzleSolver.Utils
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", false, true);
             return builder.Build();
+        }
+        
+        public enum RunTypeEnum
+        {
+            THREADED,
+            MPI
         }
     }
 }
