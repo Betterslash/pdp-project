@@ -22,3 +22,19 @@
 #### How we implemented threading/MPI :
     We grab the first 4 possible ways of solving the puzzle and for each of them we create a thread/worker and a Main/Master which will denote the first one to finish and stop and print the path which took the least amount of resources.
 
+#### Test Case :
+        2,  4,  8,  12
+        1, 7,  3,  14
+        -1,  6, 15, 11
+        5,  9,  13, 10
+    -> Excepted Result : 
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, -1
+
+    -> THREADED TIME : 700~800ms
+    -> MPI TIME : 900-1000ms
+
+
+!!! IMPORTANT : Run the program by entering where the exe is located the command >>mpiexec -n 8(number of processes *greater than 5) FifteenPuzzleSolver.exe

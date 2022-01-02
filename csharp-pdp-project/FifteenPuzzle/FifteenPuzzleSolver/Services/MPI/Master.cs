@@ -25,8 +25,8 @@ namespace FifteenPuzzleSolver.Services.MPI
 
             var result = Communicator.world.Receive<List<Node>>(Communicator.anySource, 0);
             var time = (DateTime.Now - dateTime).Milliseconds;
-            Console.WriteLine("MPI Execution Finished: " + result + "\n" + "TIME: " + time + " milliseconds");
             result.ForEach(Solver.PrettyPrint);
+            Console.WriteLine("MPI Execution Finished: " + result + "\n" + "TIME: " + time + " milliseconds");
         }
     }
 }
