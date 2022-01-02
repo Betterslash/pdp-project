@@ -1,5 +1,8 @@
-﻿namespace FifteenPuzzleSolver.Models
+﻿using System;
+
+namespace FifteenPuzzleSolver.Models
 {
+    [Serializable]
     public class Puzzle
     {
         private Puzzle(int[][] puzzleRepresentation, int[] emptyPosition)
