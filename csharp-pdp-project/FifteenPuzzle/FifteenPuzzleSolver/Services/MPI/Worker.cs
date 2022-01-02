@@ -10,9 +10,10 @@ namespace FifteenPuzzleSolver.Services.MPI
         {
             var solver = Solver.CreateInstance();
             var resource = Communicator.world.Receive<Node>(0, 0);
-            Console.WriteLine(resource);
+            Console.WriteLine($"Worker with id received ${resource}");
             var result = solver.Resolve(resource);
             Communicator.world.Send(result, 0, 0);
+            Console.WriteLine($"Worker responded to master with {result}");
         }
     }
 }

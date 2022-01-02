@@ -8,12 +8,13 @@ namespace FifteenPuzzleSolver.Services.MPI
 {
     public static class Master
     {
-        public static void StartWorkers()
+        public static void Start()
         {
             var dateTime = new DateTime();
             var worldSize = Communicator.world.Size;
             var root = Node.CreateInstance(Solver.StartPuzzle, 0, 0);
-            var children = root.GenerateChildren();
+            var children = root.GenerateChildren()
+                .Where(e => e != null);
             var index = 1;
             foreach (var child in children)
             {
@@ -22,27 +23,10 @@ namespace FifteenPuzzleSolver.Services.MPI
                 index++;
             }
 
-            var results = new List<List<Node>>();
-            for (var i = 1; i < worldSize; i++)
-                results[i - 1] = Communicator.world.Receive<List<Node>>(i, 0);
+            var result = Communicator.world.Receive<List<Node>>(Communicator.anySource, 0);
             var time = (DateTime.Now - dateTime).Milliseconds;
-            Console.WriteLine("MPI Execution Finished: " + GetBestResult(results) + "\n" + "TIME: " + time + " milliseconds");
-        }
-
-        private static List<Node> GetBestResult(List<List<Node>> results)
-        {
-            var min = long.MaxValue;
-            var position = -1;
-            var index = 0;
-            results.ForEach(e => {
-                if (e.Count < min)
-                {
-                    min = e.Count;
-                    position = index;
-                }
-                index++;
-            });
-            return results.ElementAt(position);
+            Console.WriteLine("MPI Execution Finished: " + result + "\n" + "TIME: " + time + " milliseconds");
+            result.ForEach(Solver.PrettyPrint);
         }
     }
 }

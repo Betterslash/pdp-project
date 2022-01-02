@@ -16,8 +16,7 @@ namespace FifteenPuzzleSolver
         public static async Task Main(string[] args)
         {
             //MpiRun(args);
-            Console.WriteLine($"Puzzle size is {Constants.PuzzleSize}");
-            Console.WriteLine($"Puzzle solving will be done using {Constants.RunType}");
+            
             switch (Constants.RunType)
             {
                 case Constants.RunTypeEnum.THREADED:
@@ -37,6 +36,8 @@ namespace FifteenPuzzleSolver
         
         private static async Task ThreadedRun()
         {
+            Console.WriteLine($"Puzzle size is {Constants.PuzzleSize}");
+            Console.WriteLine($"Puzzle solving will be done using {Constants.RunType}");
             var start = DateTime.Now;
             var root = Node.CreateInstance(Solver.StartPuzzle, 0, 0);
             var children = await root.GenerateChildrenAsync();
@@ -61,8 +62,10 @@ namespace FifteenPuzzleSolver
             {
                 if (Communicator.world.Rank == 0)
                 {
+                    Console.WriteLine($"Puzzle size is {Constants.PuzzleSize}");
+                    Console.WriteLine($"Puzzle solving will be done using {Constants.RunType}");
                     Console.WriteLine("Master will start ...");
-                    Master.StartWorkers();
+                    Master.Start();
                 }
                 else
                 {
